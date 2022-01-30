@@ -23,30 +23,49 @@ def User(ur):
         logme.fatal(msg)
         raise KeyError(msg)
     _usr = user()
-    _usr.id = ur['data']['user']['rest_id']
-    _usr.name = ur['data']['user']['legacy']['name']
-    _usr.username = ur['data']['user']['legacy']['screen_name']
-    _usr.bio = ur['data']['user']['legacy']['description']
-    _usr.location = ur['data']['user']['legacy']['location']
-    _usr.url = ur['data']['user']['legacy']['url']
+    if 'rest_id' in ur['data']['user']:
+        _usr.id = ur['data']['user']['rest_id']
+    if 'name' in ur['data']['user']['legacy']:
+        _usr.name = ur['data']['user']['legacy']['name']
+    if 'screen_name' in ur['data']['user']['legacy']:
+        _usr.username = ur['data']['user']['legacy']['screen_name']
+    if 'description' in ur['data']['user']['legacy']:
+        _usr.bio = ur['data']['user']['legacy']['description']
+    if 'location' in ur['data']['user']['legacy']:
+        _usr.location = ur['data']['user']['legacy']['location']
+    if 'url' in ur['data']['user']['legacy']:
+        _usr.url = ur['data']['user']['legacy']['url']
     # parsing date to user-friendly format
-    _dt = ur['data']['user']['legacy']['created_at']
-    _dt = datetime.datetime.strptime(_dt, '%a %b %d %H:%M:%S %z %Y')
+    if 'created_at' in ur['data']['user']['legacy']:
+        _dt = ur['data']['user']['legacy']['created_at']
+    if 'user' in ur['data']:
+        _dt = datetime.datetime.strptime(_dt, '%a %b %d %H:%M:%S %z %Y')
     # date is of the format year,
-    _usr.join_date = _dt.strftime(User_formats['join_date'])
-    _usr.join_time = _dt.strftime(User_formats['join_time'])
+    if 'join_date' in User_formats:
+        _usr.join_date = _dt.strftime(User_formats['join_date'])
+    if 'join_time' in User_formats:
+        _usr.join_time = _dt.strftime(User_formats['join_time'])
 
     # :type `int`
-    _usr.tweets = int(ur['data']['user']['legacy']['statuses_count'])
-    _usr.following = int(ur['data']['user']['legacy']['friends_count'])
-    _usr.followers = int(ur['data']['user']['legacy']['followers_count'])
-    _usr.likes = int(ur['data']['user']['legacy']['favourites_count'])
-    _usr.media_count = int(ur['data']['user']['legacy']['media_count'])
+    if 'statuses_count' in ur['data']['user']['legacy']:
+        _usr.tweets = int(ur['data']['user']['legacy']['statuses_count'])
+    if 'friends_count' in ur['data']['user']['legacy']:
+        _usr.following = int(ur['data']['user']['legacy']['friends_count'])
+    if 'followers_count' in ur['data']['user']['legacy']:
+        _usr.followers = int(ur['data']['user']['legacy']['followers_count'])
+    if 'favourites_count' in ur['data']['user']['legacy']:
+        _usr.likes = int(ur['data']['user']['legacy']['favourites_count'])
+    if 'media_count' in ur['data']['user']['legacy']:
+        _usr.media_count = int(ur['data']['user']['legacy']['media_count'])
 
-    _usr.is_private = ur['data']['user']['legacy']['protected']
-    _usr.is_verified = ur['data']['user']['legacy']['verified']
-    _usr.avatar = ur['data']['user']['legacy']['profile_image_url_https']
-    _usr.background_image = ur['data']['user']['legacy']['profile_banner_url']
+    if 'protected' in ur['data']['user']['legacy']:
+        _usr.is_private = ur['data']['user']['legacy']['protected']
+    if 'verified' in ur['data']['user']['legacy']:
+        _usr.is_verified = ur['data']['user']['legacy']['verified']
+    if 'profile_image_url_https' in ur['data']['user']['legacy']:
+        _usr.avatar = ur['data']['user']['legacy']['profile_image_url_https']
+    if 'profile_banner_url' in ur['data']['user']['legacy']:
+        _usr.background_image = ur['data']['user']['legacy']['profile_banner_url']
     # TODO : future implementation
     # legacy_extended_profile is also available in some cases which can be used to get DOB of user
     return _usr
